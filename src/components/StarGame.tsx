@@ -184,8 +184,8 @@ function drawBg(ctx: CanvasRenderingContext2D, lv: number, t: number) {
       r(ctx, "#6b4a35", 10 + i * 52, 14, 44, 40);
       r(ctx, "#8b6a4f", 12 + i * 52, 28, 40, 2);
       r(ctx, "#8b6a4f", 12 + i * 52, 42, 40, 2);
-      r(ctx, ["#f4a7bd", "#a8c3a0", "#9ec5e8", "#ffe08a"][i % 4], 16 + i * 52, 20, 6, 8);
-      r(ctx, ["#9ec5e8", "#f4a7bd", "#ffe08a", "#a8c3a0"][i % 4], 30 + i * 52, 34, 8, 8);
+      r(ctx, ["#f4a7bd", "#a8c3a0", "#9ec5e8", "#ffe08a"][i % 4]!, 16 + i * 52, 20, 6, 8);
+      r(ctx, ["#9ec5e8", "#f4a7bd", "#ffe08a", "#a8c3a0"][i % 4]!, 30 + i * 52, 34, 8, 8);
     }
     for (let y = 60; y < H; y += 12)
       for (let x = 0; x < W; x += 12) r(ctx, (x + y) % 24 === 0 ? "#f7e6d6" : "#f1d9c6", x, y, 12, 12);
@@ -288,7 +288,7 @@ export function StarGame() {
   }, []);
 
   const startLevel = useCallback((lv: number) => {
-    const L = LEVELS[lv];
+    const L = LEVELS[lv]!;
     Object.assign(g.current, {
       px: 30, py: lv === 2 ? 160 : 200, dir: 0, level: lv,
       stars: L.stars.map((s) => [...s] as [number, number]),
@@ -306,7 +306,7 @@ export function StarGame() {
     const s = g.current;
     if (s.dialog) return advance();
     if (!s.playing) return;
-    const L = LEVELS[s.level];
+    const L = LEVELS[s.level]!;
     if (s.chest && Math.hypot(s.px - 160, s.py - 165) < 26 && s.chestOpen === 0) {
       s.chestOpen = 1;
       return;
@@ -328,10 +328,10 @@ export function StarGame() {
       ArrowLeft: "left", KeyA: "left", ArrowRight: "right", KeyD: "right",
     };
     const down = (e: KeyboardEvent) => {
-      if (map[e.code]) { keys.current[map[e.code]] = true; e.preventDefault(); }
+      const k = map[e.code]; if (k) { keys.current[k] = true; e.preventDefault(); }
       if (e.code === "Space" || e.code === "Enter") { e.preventDefault(); if (!e.repeat) interact(); }
     };
-    const up = (e: KeyboardEvent) => { if (map[e.code]) keys.current[map[e.code]] = false; };
+    const up = (e: KeyboardEvent) => { const k = map[e.code]; if (k) keys.current[k] = false; };
     window.addEventListener("keydown", down);
     window.addEventListener("keyup", up);
     return () => { window.removeEventListener("keydown", down); window.removeEventListener("keyup", up); };
@@ -345,13 +345,13 @@ export function StarGame() {
     const loop = () => {
       const s = g.current;
       s.t++;
-      const L = LEVELS[s.level];
+      const L = LEVELS[s.level]!;
       if (s.playing && !s.dialog && s.chestOpen === 0) {
         let dx = 0, dy = 0;
-        if (keys.current.up) { dy = -1; s.dir = 1; }
-        if (keys.current.down) { dy = 1; s.dir = 0; }
-        if (keys.current.left) { dx = -1; s.dir = 2; }
-        if (keys.current.right) { dx = 1; s.dir = 3; }
+        if (keys.current["up"]) { dy = -1; s.dir = 1; }
+        if (keys.current["down"]) { dy = 1; s.dir = 0; }
+        if (keys.current["left"]) { dx = -1; s.dir = 2; }
+        if (keys.current["right"]) { dx = 1; s.dir = 3; }
         if (dx || dy) {
           const sp = 1.4 / (dx && dy ? 1.414 : 1);
           s.px = Math.max(10, Math.min(W - 10, s.px + dx * sp));
@@ -419,7 +419,7 @@ export function StarGame() {
 
         {screen === "play" && (
           <div className="hud">
-            <span>{LEVELS[level].name}</span>
+            <span>{LEVELS[level]!.name}</span>
             <span className="hud-stars">★ {stars} / {total}</span>
           </div>
         )}
@@ -427,8 +427,8 @@ export function StarGame() {
 
         {dialog.length > 0 && (
           <button className="dialog" onClick={advance}>
-            <span className="dialog-name">{dialog[0].name}</span>
-            <span className="dialog-text">{dialog[0].text}</span>
+            <span className="dialog-name">{dialog[0]!.name}</span>
+            <span className="dialog-text">{dialog[0]!.text}</span>
             <span className="dialog-next">▼ 點擊 / 空白鍵繼續</span>
           </button>
         )}
@@ -461,7 +461,7 @@ export function StarGame() {
         {screen === "clear" && (
           <div className="overlay">
             <p className="overlay-kicker">STAGE CLEAR</p>
-            <h2 className="title-sub">{LEVELS[level].name} 完成！</h2>
+            <h2 className="title-sub">{LEVELS[level]!.name} 完成！</h2>
             <p className="overlay-text">收集了 {total} 顆星星 ★</p>
             <button className="btn-game" onClick={() => startLevel(level + 1)}>
               前往 {LEVELS[level + 1]?.name}
