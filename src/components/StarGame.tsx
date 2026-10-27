@@ -190,7 +190,7 @@ function drawBg(ctx: CanvasRenderingContext2D, lv: number, t: number) {
     for (let y = 60; y < H; y += 12)
       for (let x = 0; x < W; x += 12) r(ctx, (x + y) % 24 === 0 ? "#f7e6d6" : "#f1d9c6", x, y, 12, 12);
     r(ctx, "#c58b9b", 0, 58, W, 3);
-    ctx.fillStyle = "#4a3a6a";
+    ctx.fillStyle = "#ffe08a";
     ctx.font = "8px sans-serif";
     ctx.fillText("★ 星星失物招領所 ★", 118, 9);
   } else if (lv === 1) {
