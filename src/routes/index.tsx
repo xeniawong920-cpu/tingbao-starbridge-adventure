@@ -1,24 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { StarGame } from "@/components/StarGame";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "星星失物招領所：給婷寶的星光" },
+      { name: "description", content: "一款送給婷寶的 Q 版生日冒險小遊戲：收集星星、重溫法國回憶，在星光橋上相遇。" },
+      { property: "og:title", content: "星星失物招領所：給婷寶的星光" },
+      { property: "og:description", content: "Q 版像素生日冒險遊戲，從英國到香港的星光禮物。" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main className="min-h-screen bg-background">
+      <StarGame />
+    </main>
   );
 }
